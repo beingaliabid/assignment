@@ -1,0 +1,7 @@
+bases:
+  - ../../base
+patches:
+  - replica_count.yaml
+  - resource_limits.yaml
+  - probs.yaml
+  - api-anti-affinity.yaml

@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: test-proj
+spec:
+  template:
+    spec:
+      containers:
+      - name: api
+        readinessProbe:
+          httpGet:
+            path: http://api-service:3000/api/status
+            port: 3000
+        livenessProbe:
+          httpGet:
+            path: http://api-service:3000/api/status
+            port: 3000

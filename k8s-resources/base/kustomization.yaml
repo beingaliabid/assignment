@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+configMapGenerator:
+  - name: api-cm
+    namespace: test-proj
+    literals:
+     - QUOTES_API=http://quotes-service:5000
+
+resources:
+  - ./api/api-deployment.yaml
+  - ./api/api-svc.yaml
+  - ./api/hpa-api.yaml
+  - ./frontend/frontend-deployment.yaml
+  - ./frontend/frontend-svc.yaml
+  - ./quoteservice/quote-deployment.yaml
+  - ./quoteservice/quote-svc.yaml
+  - ./quoteservice/hpa-quoteservice.yaml
+  - ./permissions/permission.yaml
+  - namespace.yaml

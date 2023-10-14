@@ -1,0 +1,38 @@
+apiVersion: autoscaling/v2 
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-api
+  namespace: test-proj
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment 
+    name: api
+  maxReplicas: 3
+  minReplicas: 1
+  metrics:
+  - resource:
+      name: memory
+      target:
+        averageUtilization: 90 # (i.e., if average memory utilization of all running pods is above 90%)
+        type: Utilization
+    type: Resource
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 90 # (i.e., if average cpu utilization of all running pods is above 90%)
+        type: Utilization
+    type: Resource
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 30 # Get ready to perform a scale-out after 30s
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 10 # (i.e., scale-out one pod every 10s if needed)
+    scaleDown:
+      stabilizationWindowSeconds: 180 # Get ready to perform a scale-in three minutes later
+      policies:
+      - type: Pods
+        value: 1
+        periodSeconds: 30 # (i.e., scale-in one pod every 30s if needed)

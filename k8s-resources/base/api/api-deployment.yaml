@@ -1,0 +1,33 @@
+# api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: test-proj
+  labels: 
+    app: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      initContainers:
+        - name: wait-for-quotes-service
+          image: busybox
+          command: ['sh', '-c', 'until nc -z quotes-service 5000; do sleep 1; done']
+      containers:
+      - name: api
+        image: aakniazi/apigateway
+        env:
+        - name: QUOTES_API
+          valueFrom:
+            configMapKeyRef:
+              name: api-cm
+              key: QUOTES_API
+        ports:
+        - containerPort: 3000
